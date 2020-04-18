@@ -1,0 +1,53 @@
+html, body {
+  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(75deg, #2A3258, #4C4177);
+}
+
+section {
+  font-family: 'Exo', sans-serif;
+  font-weight: 100;
+  color: #fff;
+  position: absolute;
+  z-index: 11000;
+  top: 50vh;
+  transform: translateY(-50%);
+  text-align: center;
+  display: inline-block;
+  margin: auto;
+  left: 0;
+  right: 0;
+  padding: 5px;
+}
+section .top {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+section .bal {
+  font-size: 50px;
+  color: #09E828;
+}
+section .eth {
+  font-size: 20px;
+  color: #fff;
+  margin-left: 10px;
+}
+
+footer {
+  position: absolute;
+  bottom: 10px;
+  text-align: center;
+  display: block;
+  width: 100%;
+  font-family: 'Exo', sans-serif;
+  font-weight: 100;
+  font-size: 10px;
+  color: #fff;
+  letter-spacing: 2px;
+}
+footer a {
+  color: #09E828;
+  text-decoration: none;
+}

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>TradeSpade - CMPT 733 Project - SFU</title>
+  <!-- Favicon Icon -->
+  <link rel="shortcut icon" type="image/x-icon" href="../static/assets/images/favicon.png">
+  <!-- Bootstrap core CSS-->
+  <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom fonts for this template-->
+  <link href="static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+  <!-- Icon Fonts-->
+  <link href="static/vendor/webfont/css/cryptocoins.css" rel="stylesheet" type="text/css">
+  <link href="static/vendor/webfont/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+  <!-- Page level plugin CSS-->
+  <link href="static/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+  <!-- Custom styles for this template-->
+  <link href="static/css/admin.css" rel="stylesheet">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="static/js/app.js"></script>
+  <style>
+    .container-test {
+  padding-left: 15px;
+  padding-right: 10px;
+  margin-right: auto;
+  margin-left: auto;
+  width:100%;
+}
+.ui-tabs, .ui-tabs .ui-tabs-nav, .ui-tabs .ui-tabs-panel,
+.ui-widget-header .ui-state-default,
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active
+{
+        background: none;
+        border:none;
+        color:#ffffff;
+          padding: 5px;
+
+}
+.ui-tabs .ui-tabs-nav li.ui-tabs-active {
+    border:none;
+    background: #28a745;
+}
+
+.ui-tabs{
+    color:#ffffff;
+
+
+}
+.ui-tabs .ui-tabs-nav li.ui-state-default{
+    border:none;
+    background: rgba(40, 167, 69,0.4);
+    border-radius: 3px;
+}
+
+.ui-tabs .ui-tabs-nav li.ui-state-active{
+    border:none;
+    background: rgba(40, 167, 69,0.7);
+    color:#ffffff;
+    border-radius: 3px;
+}
+
+#tabs .ui-state-default a { color: #FFFFFF; font-size: 17px;font-weight: 'bold'}
+#tabs .ui-state-active a { color: #FFFFFF; }
+#tabs .ui-state-hover a, .ui-state-focus a { color: #FFFFFF; }
+.ui-tabs-nav {
+    background: transparent;
+}
+embed {
+  width:100%;
+  height:710px;
+}
+  </style>
+</head>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top site-title" id='mainNav'>
+
+  <button class="navbar-toggler bg-dark" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+  <span class="navbar-toggler-icon"></span>
+</button>
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+    <img class="navbar-img" src="static/images/logo.png" alt="Girl in a jacket" style="width:15%; height:50px">
+    <button class="btn btn-outline-danger btn-pad" onclick="window.location.href='{{ url_for( 'tradespade' ) }}';"  type="submit">Home</button>
+    <button class="btn btn-outline-danger btn-pad" onclick="window.location.href='{{ url_for( 'cryptocurrencies' ) }}';"  type="submit" >Crypto Currencies</button>
+    <button class="btn btn-outline-danger btn-pad" onclick="window.location.href='{{ url_for( 'stocks' ) }}';"  type="submit">Stocks</button>
+    <button class="btn btn-outline-danger btn-pad" onclick="window.location.href='{{ url_for( 'eda' ) }}';"  type="submit">EDA</button>
+    <button class="btn btn-outline-danger btn-pad" onclick="window.location.href='{{ url_for( 'data_collection' ) }}';"  type="submit">Data Collection</button><ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+
+    </ul>
+
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </div>
+</nav>
+
+<body class="fixed-nav sticky-footer" id="page-top" >
+  <!-- Navigation-->
+
+  <div class="box bg_primary" style="margin-left: 20px;margin-right: 20px;">
+    <div class="box-head d-flex align-items-center justify-content-between" id="PageName">
+   <h4>Data Collection</h4>
+    </div>
+  </div>
+
+  <div id="tabs" style="border:none;background: transparent;padding: 10px;">
+    <ul>
+      <li><a href="#tabs-1">OHLCV stocks</a></li>
+      <li><a href="#tabs-2">OHLCV Cryptocurrency</a></li>
+      <li><a href="#tabs-3">Financial News</a></li>
+      <li><a href="#tabs-4">General News</a></li>
+      <li><a href="#tabs-5">Reddit Cryptocurreny</a></li>
+      <li><a href="#tabs-6">Twitter Cryptocurrency</a></li>
+      <li><a href="#tabs-7">Reddit Stocks</a></li>
+      <li><a href="#tabs-8">Twitter Stocks</a></li>
+    </ul>
+    <div id="tabs-1">
+      <embed type="text/html" src="OHLCV_stock">
+    </div>
+    <div id="tabs-2">
+      <embed type="text/html" src="OHLCV_cryptocurrency"></div>
+    <div id="tabs-3">
+      <embed type="text/html" src="financial_times_news"></div>
+        <div id="tabs-4">
+          <embed type="text/html" src="general_news"></div>
+            <div id="tabs-5">
+              <embed type="text/html" src="reddit_cryptocurrencies">
+            </div>
+            <div id="tabs-6">
+              <embed type="text/html" src="twitter_cryptocurrency"></div>
+            <div id="tabs-7">
+              <embed type="text/html" src="reddit_stocks"></div>
+                <div id="tabs-8">
+                  <embed type="text/html" src="twitter_stocks"></div>
+  </div>
+
+
+</body>
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+ <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+
+ <script>
+ $( function() {
+   $( "#tabs" ).tabs();
+ } );
+ </script>
+
+
+
+</html>

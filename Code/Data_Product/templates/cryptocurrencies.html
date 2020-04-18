@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>TradeSpade - CMPT 733 Project - SFU</title>
+  <!-- Favicon Icon -->
+  <link rel="shortcut icon" type="image/x-icon" href="../static/assets/images/favicon.png">
+  <!-- Bootstrap core CSS-->
+  <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom fonts for this template-->
+  <link href="static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+  <!-- Icon Fonts-->
+  <link href="static/vendor/webfont/css/cryptocoins.css" rel="stylesheet" type="text/css">
+  <link href="static/vendor/webfont/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+  <!-- Page level plugin CSS-->
+  <link href="static/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+  <!-- Custom styles for this template-->
+  <link href="static/css/admin.css" rel="stylesheet">
+  <script src="static/js/app.js"></script>
+  <style>
+    .container-test {
+  padding-left: 15px;
+  padding-right: 10px;
+  margin-right: auto;
+  margin-left: auto;
+  width:100%;
+}
+  </style>
+
+</head>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top site-title" id='mainNav'>
+
+  <button class="navbar-toggler bg-dark" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+  <span class="navbar-toggler-icon"></span>
+</button>
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+    <img class="navbar-img" src="static/images/logo.png" alt="Girl in a jacket" style="width:15%; height:50px">
+    <button class="btn btn-outline-danger btn-pad" onclick="window.location.href='{{ url_for( 'tradespade' ) }}';"  type="submit">Home</button>
+    <button class="btn btn-outline-danger btn-pad" onclick="window.location.href='{{ url_for( 'cryptocurrencies' ) }}';"  type="submit" >Crypto Currencies</button>
+    <button class="btn btn-outline-danger btn-pad" onclick="window.location.href='{{ url_for( 'stocks' ) }}';"  type="submit">Stocks</button>
+    <button class="btn btn-outline-danger btn-pad" onclick="window.location.href='{{ url_for( 'eda' ) }}';"  type="submit">EDA</button>
+    <button class="btn btn-outline-danger btn-pad" onclick="window.location.href='{{ url_for( 'data_collection' ) }}';"  type="submit">Data Collection</button><ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+
+    </ul>
+
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </div>
+</nav>
+
+<body class="fixed-nav sticky-footer" id="page-top">
+  <!-- Navigation-->
+
+  <div class="container-test">
+    <div class="container-fluid">
+      <div class="row">
+
+        <div class="form-group col-md-12 text-center mb-0">
+          <ul class=" btn-outline-danger list_none p-0 payment_methods_list m-0 ">
+              {% for key in stocks %}
+              {% if key.predicted == 'Sell' and key.asset_name == 'Bitcoin' %}
+              <li class='active'>
+                <a href="javascript:void(0);" data-tag="BTC" style="background-color: #dc3545;"><i class="icon-arrow-down-circle" title="BTC"></i><span>{{key.asset_name}}</span></a>
+              </li>
+              {% elif key.predicted == 'Buy' and key.asset_name == 'Bitcoin' %}
+              <li class='active'>
+                <a href="javascript:void(0);" data-tag="BTC" style="background-color: #28a745;"><i class="icon-arrow-down-circle" title="BTC"></i><span>{{key.asset_name}}</span></a>
+              </li>
+              {% elif key.predicted == 'Sell' %}
+              <li >
+                <a href="javascript:void(0);" data-tag="BTC" style="background-color: #dc3545;"><i class="icon-arrow-down-circle" title="BTC"></i><span>{{key.asset_name}}</span></a>
+              </li>
+   {% else %}
+   <li>
+     <a href="javascript:void(0);" data-tag="BTC" style="background-color: #28a745;"><i class="icon-arrow-up-circle" title="BTC"></i><span>{{key.asset_name}}</span></a>
+   </li>
+   {% endif %}
+
+            {% endfor %}
+          </ul>
+        </div>
+
+      </div>
+      <div class="row col-md-12">
+        <div class="col-xl-9 col-sm-6 mb-4">
+          <div class="box bg_primary">
+            <div class="box-head d-flex align-items-center justify-content-between" id="PageName">
+              <h2>Bitcoin</h2>
+              <i title="BTC" class="icon-graph"></i>
+            </div>
+            <div class="box-body d-flex align-items-center justify-content-between" id='curprice'>
+              <span> 1 BTC = 6,695.90 USD </span>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-sm-6 mb-4">
+          <div class="box" id='signalstatus'>
+            <div class="box-head d-flex align-items-center justify-content-between"  id="signalind">
+              <h3>Neo</h3>
+              <i class="icon-arrow-down" title="NEO"></i>
+            </div>
+            <div class="box-body d-flex align-items-center justify-content-between" id='dateup'>
+              <span>1 NEO - 38.54 USD </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row col-md-12">
+      <div class="col-md-3 col-sm-3">
+        <div class="card mb-4">
+          <div class="card-header text_md_center">Reddit</div>
+          <div class="card-body">
+            <div class="apexchart-wrapper">
+              <div id="apexdemo8"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-3">
+        <div class="card mb-4">
+          <div class=" card-header text_md_center ">Tweets</div>
+          <div class="card-body">
+            <div class="apexchart-wrapper">
+              <div id="apexdemo11"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-3">
+        <div class="card mb-4">
+          <div class="card-header text_md_center">News</div>
+          <div class="card-body">
+            <div class="apexchart-wrapper">
+              <div id="apexdemo9"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-3">
+        <div class="card mb-4">
+          <div class="card-header text_md_center">Financial News</div>
+          <div class="card-body">
+            <div class="apexchart-wrapper">
+              <div id="apexdemo10"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row col-md-12">
+
+        <div class="col-md-12">
+          <div class="card mb-12">
+            <div class="card-header">Price Prediction with Most Impactful News Feature</div>
+            <div class="card-body" container="body">
+              <div class="chartjs-wrapper" id="chartjs-wrapper" >
+                <canvas id="chartjsdemo4" width="800"></canvas>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="row col-md-12">
+
+        <div class="col-md-6">
+          <div class="card mb-6">
+            <div class="card-header">Historical Data with Predictions</div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover mb-0 table_s1 " id="dataTable" width="100%" cellspacing="0">
+
+                </table>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card mb-6">
+            <div class="card-header">Price vs Sentiment Score</div>
+            <div class="card-body">
+              <div class="sparkline-wrapper">
+                <div id="sparklinedemo4" class="chart-fit"></div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="card mb-6">
+            <div class="card-header text_md_center">Latest News</div>
+            <div class="card-body">
+              <ul class="timeline_wrap list_none fc-scroll p-0">
+                {% for key in news %}
+                <li>
+                  <div class="timeline_icon"></div>
+                  <div class="timeline_content"><h6>{{ key.title }}</h6>
+                    <span>{{ key.created_utc }}</span>
+                  </div>
+                </li>
+              {% endfor %}
+              </ul>
+            </div>
+          </div>
+  </div>
+      </div>
+
+      <div class="row col-md-12">
+
+        <div class="col-md-12">
+          <div class="card mb-12">
+            <div class="card-header">Historical Price Checker</div>
+            <div class="card-body">
+
+              <div class="apexchart-wrapper" id="stockmarketdemo8-upper1">
+                <div id="stockmarketdemo8" class="chart-fit"></div>
+              </div>
+              <div class="apexchart-wrapper" id="stockmarketdemo8-upper2">
+                <div id="stockmarketdemo8bottom" class="chart-fit"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+
+
+
+
+        <!-- /.container-fluid-->
+        <!-- /.content-wrapper-->
+        <footer class="sticky-footer">
+            <div class="text-center">
+              <small>Copyright © 2019 All Rights Reserved - Anurag Bejju</small>
+            </div>
+        </footer>
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded btn-default" href="#page-top">
+      <i class="fa fa-angle-up"></i>
+    </a>
+
+        <!-- Bootstrap core JavaScript-->
+        <script src="static/vendor/jquery/jquery.min.js"></script>
+        <script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <!-- Core plugin JavaScript-->
+        <script src="static/vendor/jquery-easing/jquery.easing.min.js"></script>
+        <!-- Page level plugin JavaScript-->
+        <script src="static/vendor/datatables/jquery.dataTables.js"></script>
+        <script src="static/vendor/datatables/dataTables.bootstrap4.js"></script>
+        <!--Perfect scrollbar.js-->
+
+        <script src="static/js/perfect-scrollbar.js"></script>
+        <!-- Custom scripts for all pages-->
+        <script src="static/js/admin.js"></script>
+        <!-- Custom scripts for this page-->
+        <script src="static/js/admin-datatables.min.js"></script>
+        <script src="static/assets/js/vendors.js"></script>
+
+        <!-- custom app -->
+        <script src="static/assets/js/app.js"></script>
+        <script type=text/javascript> $SCRIPT_ROOT={{ request.script_root|tojson|safe }} ; </script> <script type=text/javascript> $(function() { $('a').bind('click', function(event) { $('#dataTable').empty(); $.getJSON($SCRIPT_ROOT +
+          '/_add_numbers' , { a: event.currentTarget.innerText,type:'cryptocurrencies',  }, function(data) { $('#dataTable').empty(); $("#dataTable").append("<thead><tr><th>Date</th><th>Open</th><th>High</th><th>Low</th><th>Close</th><th>Volume</th><th>Value</th><th>Price Signal</th></tr></thead><tbody >");
+
+
+              $.each(data.result, function (index, value) {
+
+
+              var cols = "<tr>";
+                cols += '<td>'+value.created_utc+'</td>'
+                cols += '<td>'+value.open.toFixed(2)+'</td>'
+                cols += '<td>'+value.high.toFixed(2)+'</td>'
+                cols += '<td>'+value.low.toFixed(2)+'</td>'
+                cols += '<td>'+value.close.toFixed(2)+'</td>'
+                cols += '<td>'+value.volume+'</td>'
+              if (value.predicted == 'Buy') {
+            cols += '<td><span class="badge-success badge-pill">'+value.predicted+'</span></td>';
+          }
+          else{
+            cols += '<td><span class="badge-danger badge-pill">'+value.predicted+'</span></td>';
+          }
+          if (value.value == 'Buy') {
+            cols += '<td><span class="badge-success badge-pill">'+value.value+'</span></td>';
+      }
+      else{
+        cols += '<td><span class="badge-danger badge-pill">'+value.value+'</span></td>';
+      }
+cols += '</tr>';
+
+             			    $("#dataTable").append(cols);
+
+
+
+  });
+  $("#dataTable").append("</tbody ><tfoot><tr><th>Date</th><th>Open</th><th>High</th><th>Low</th><th>Close</th><th>Volume</th><th>Value</th><th>Price Signal</th></tr></tfoot>");
+
+            });
+            return false;
+          });
+        });
+
+        $(function() {
+          $( document ).ready(function() {
+            $.getJSON($SCRIPT_ROOT + '/_add_numbers', {
+              a: 'Bitcoin',
+              type:'cryptocurrencies',
+            }, function(data) {
+              $('#dataTable').empty();
+                $("#dataTable").append("<thead><tr><th>Date</th><th>Open</th><th>High</th><th>Low</th><th>Close</th><th>Volume</th><th>Value</th><th>Price Signal</th></tr></thead><tbody >");
+$("#PageName h2").html(data.result[0].asset_name);
+$("#curprice span").html('Current Price : '+data.result[0].open + ' $' );
+if ( data.result[0].predicted == 'Buy'){
+
+  $( "#signalstatus" ).addClass("bg-success")
+$( "#signalind i" ).toggleClass("icon-arrow-up","icon-arrow-down" );
+}
+else{
+    $( "#signalstatus" ).addClass("bg-danger")
+  $( "#signalind i" ).toggleClass("icon-arrow-down","icon-arrow-up" );
+}
+
+
+$("#signalind h3").html(data.result[0].predicted);
+$("#dateup span").html('Last Updated : '+data.result[0].created_utc + ' ');
+
+$.each(data.result, function (index, value) {
+
+
+                var cols = "<tr>";
+                cols += '<td>'+value.created_utc+'</td>'
+                cols += '<td>'+value.open.toFixed(2)+'</td>'
+                cols += '<td>'+value.high.toFixed(2)+'</td>'
+                cols += '<td>'+value.low.toFixed(2)+'</td>'
+                cols += '<td>'+value.close.toFixed(2)+'</td>'
+                cols += '<td>'+value.volume+'</td>'
+
+                if (value.predicted == 'Buy') {
+              cols += '<td><span class="badge-success badge-pill">'+value.predicted+'</span></td>';
+            }
+            else{
+              cols += '<td><span class="badge-danger badge-pill">'+value.predicted+'</span></td>';
+            }
+            if (value.value == 'Buy') {
+              cols += '<td><span class="badge-success badge-pill">'+value.value+'</span></td>';
+        }
+        else{
+          cols += '<td><span class="badge-danger badge-pill">'+value.value+'</span></td>';
+        }
+  cols += '</tr>';
+
+
+             			    $("#dataTable").append(cols);
+
+
+
+  });
+  $("#dataTable").append("</tbody ><tfoot><tr><th>Date</th><th>Open</th><th>High</th><th>Low</th><th>Close</th><th>Volume</th><th>Value</th><th>Price Signal</th></tr></tfoot>");
+
+  var created_utc = [];
+  var open = [];
+  var news_combined_score = [];
+    $.each(data.senti_result, function (index, value) {
+      created_utc.push(String(value.created_utc));
+      open.push(value.open);
+      news_combined_score.push(value.news_combined_score);
+
+    });
+
+  var sparklinedemo4 = jQuery("#sparklinedemo4");
+
+  if (sparklinedemo4.length > 0) {
+      $(sparklinedemo4).sparkline(open, {
+          type: 'line',
+          width: '100%',
+          height: '300',
+          lineColor: 'rgba(70, 197, 173, 1)',
+  lineWidth: '3',
+          fillColor: 'rgba(70, 197, 173, 0.3)',
+          highlightLineColor: 'rgba(0,0,0,.1)',
+          highlightSpotColor: 'rgba(0,0,0,.2)'
+      });
+      $(sparklinedemo4).sparkline(news_combined_score, {
+          type: 'bar',
+          height: '200',
+          barWidth: '10',
+          barSpacing: '5',
+          composite: true,
+          barColor: '#2ecc71',
+      });
+
+  }
+
+  var created_utc = [];
+  var open = [];
+  var news_combined_score = [];
+    $.each(data.senti_result, function (index, value) {
+      created_utc.push(String(value.created_utc));
+      open.push(value.open);
+      news_combined_score.push(value.news_combined_score);
+
+    });
+
+            });
+            return false;
+          });
+        });
+      </script>
+<script>
+
+
+      </script>
+
+      <script type=text/javascript> $SCRIPT_ROOT={{ request.script_root|tojson|safe }} ; </script> <script type=text/javascript> $(function() { $('a').bind('click', function(event) { $('#dataTable').empty(); $.getJSON($SCRIPT_ROOT +
+        '/_complete_graph' , { a: event.currentTarget.innerText,type:'cryptocurrencies', }, function(data) {
+          $("#PageName h2").html(data.results[0].asset_name);
+          $("#curprice span").html('Current Price : '+data.results[0].open + ' $' );
+          if ( data.results[0].predicted == 'Sell'){
+            $( "#signalstatus" ).removeClass("bg-success")
+            $( "#signalstatus" ).addClass("bg-danger")
+            $( "#signalind i" ).removeClass("icon-arrow-down")
+            $( "#signalind i" ).addClass("icon-arrow-up")
+          }
+          else{
+            $( "#signalstatus" ).removeClass("bg-danger")
+            $( "#signalstatus" ).addClass("bg-success")
+            $( "#signalind i" ).removeClass("icon-arrow-up")
+            $( "#signalind i" ).addClass("icon-arrow-down")
+          }
+          $("#signalind h3").html(data.results[0].predicted);
+          $("#dateup span").html('Last Updated : '+data.results[0].created_utc + ' ');
+
+
+          var color = Chart.helpers.color;
+          var chartjsdemo4 = jQuery("#chartjsdemo4");
+          jsonfile = data.plot1;
+          var created_utc = $.map(jsonfile, function(n) {
+            return n['created_utc']; // Here 'this' points to an 'item' in 'items'
+          })
+          var max = 0;
+          var open = $.map(jsonfile, function(n) {
+            if (n['open'] > max) {
+              max = n['open'];
+            }
+            return String(n['open']); // Here 'this' points to an 'item' in 'items'
+          })
+          var sell_predicted = $.map(jsonfile, function(n) {
+            return String(n['sell_predicted'] * (max + 10)); // Here 'this' points to an 'item' in 'items'
+          })
+          var buy_predicted = $.map(jsonfile, function(n) {
+            return String(n['buy_predicted'] * (max + 10)); // Here 'this' points to an 'item' in 'items'
+          })
+          var news_combined_tile = $.map(jsonfile, function(n) {
+            return String(n['news_combined_tile']); // Here 'this' points to an 'item' in 'items'
+          })
+
+          if (chartjsdemo4.length > 0) {
+            // Combo
+            var timeFormat = 'YYYY-MM-DD HH:mm:ss';
+
+            function newDateString(days) {
+              return moment().add(days, 'd').format(timeFormat);
+            }
+            var color = Chart.helpers.color;
+            document.getElementById("chartjs-wrapper").innerHTML = '&nbsp;';
+document.getElementById("chartjs-wrapper").innerHTML = '<canvas id="chartjsdemo4" width="800"></canvas>';
+            var ctx4 = document.getElementById("chartjsdemo4").getContext("2d");
+
+            var config4 = {
+              type: 'bar',
+              data: {
+                labels: created_utc,
+                datasets: [{
+                  type: 'bar',
+                  label: 'Sell Signal',
+                  fill:true,
+                  fillColor:'#c62828',
+                  borderColor: '#c62828',
+                    backgroundColor: '#c62828',
+                  data: sell_predicted,
+                   borderWidth: 1,
+                }, {
+                  type: 'bar',
+                  fill:true,
+                  label: 'Buy Signal',
+                  fillColor:  '#8bc34a',
+                  borderColor: '#8bc34a',
+                    backgroundColor: '#8bc34a',
+                  data: buy_predicted,
+                  borderWidth: 1,
+                }, {
+                  type: 'line',
+                  label: 'Open Price',
+                  borderColor: '#46C5AD',
+                  fillColor:  '#46C5AD',
+                  backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                  fill:true,
+                  data: open,
+                }, {
+                  label: 'News',
+                  data: news_combined_tile,
+                }, ]
+              },
+              options: {
+                maintainAspectRatio: false,
+                responsive: true,
+
+                title: {
+                  display: false,
+                  text: "Combo Time Scale"
+                },
+
+                tooltips: {
+
+
+                  tooltipEvents: ["click"],
+                  callbacks: {
+                    titleFontStyle: 'bold',
+                    titleFontSize: 24,
+                    title: function(open, data) {
+                      return data['labels'][open['index']];
+                    },
+                    label: function(tooltipItem, data) {
+                      return 'Opening Price : ' + data['datasets'][2]['data'][tooltipItem['index']] + '\n';
+                    },
+                    afterLabel: function(tooltipItem, data) {
+                      var dataset = data['datasets'][3];
+                      var buyorsell = data['datasets'][1]['data'][tooltipItem['index']];
+                      var prediction = '';
+                      if (buyorsell == 0) {
+                        prediction = 'Sell Asset';
+                      } else {
+                        prediction = 'Buy Asset';
+                      }
+                      var percent = dataset['data'][tooltipItem['index']];
+                      tooltip = 'Signal Prediction: ' + prediction + '\n' + 'Most Impacted News Article: ' + percent + '';
+                      return tooltip;
+                    },
+
+                  },
+
+                },
+                legend: {
+                  labels: {
+                    fontColor: 'white',
+                    fontFamily: 'Poppins',
+                    fontSize: 12
+
+                  }
+                },
+                scales: {
+                  xAxes: [{
+                    barPercentage: 0.5,
+                    type: "time",
+                    display: true,
+                    time: {
+                      format: timeFormat
+                    },
+                    ticks: {
+                      fontColor: 'white',
+                      fontFamily: 'Poppins',
+                      fontSize: 12
+                    }
+                  }],
+                  yAxes: [{
+                    ticks: {
+                      fontColor: 'white',
+                      fontFamily: 'Poppins',
+                      fontSize: 12,
+                      min:Math.min.apply(Math,open),
+                      max:Math.max.apply(Math,open),
+                    }
+                  }]
+                },
+              }
+            };
+
+            window.myLine4 = new Chart(ctx4, config4);
+          }
+
+
+
+          var created_utc = [];
+          var open = [];
+          var news_combined_score = [];
+            $.each(data.senti_result, function (index, value) {
+              created_utc.push(String(value.created_utc));
+              open.push(value.open);
+              news_combined_score.push(value.news_combined_score);
+
+            });
+            $("#sparklinedemo4").empty()
+          var sparklinedemo4 = jQuery("#sparklinedemo4");
+          if (sparklinedemo4.length > 0) {
+              $(sparklinedemo4).sparkline(open, {
+                  type: 'line',
+                  width: '100%',
+                  height: '300',
+                  lineColor: 'rgba(0, 0, 0, 1)',
+          lineWidth: '3',
+                  fillColor: 'rgba(0, 0, 0, 0.4)',
+                  highlightLineColor: 'rgba(0,0,0,.1)',
+                  highlightSpotColor: 'rgba(0,0,0,.2)'
+              });
+              $(sparklinedemo4).sparkline(news_combined_score, {
+                  type: 'bar',
+                  height: '200',
+                  barWidth: '10',
+                  barSpacing: '5',
+                  composite: true,
+                  barColor: '#2ecc71',
+              });
+
+          }
+
+
+
+            var created_utc = [];
+            var open = [];
+              $.each(data.result, function (index, value) {
+                created_utc.push([String(value.created_utc),value.open]);
+
+              });
+
+              document.getElementById("stockmarketdemo8-upper1").innerHTML = '&nbsp;';
+              document.getElementById("stockmarketdemo8-upper1").innerHTML = '<div id="stockmarketdemo8"  class="chart-fit"></div>';
+
+            var stockmarketdemo8 = jQuery('#stockmarketdemo8')
+            if (stockmarketdemo8.length > 0) {
+             var optionsline2 = {
+               chart: {
+                 id: 'stockmarketdemo8',
+                 type: 'line',
+                 height: 240,
+            fontFamily: 'Poppins',
+            foreColor: 'white',
+
+                 toolbar: {
+                   autoSelected: 'pan',
+                   show: false
+                 }
+               },
+               colors: ['#46C5AD'],
+               stroke: {
+                 width: 4,
+                 curve: 'smooth'
+               },
+               tooltip: {
+      enabled: true,
+      shared: true,
+      followCursor: false,
+      intersect: false,
+      inverseOrder: false,
+      custom: undefined,
+      fillSeriesColor: false,
+      theme: 'dark',
+      style: {
+        fontSize: '12px',
+        fontFamily: undefined
+      },
+      onDatasetHover: {
+          highlightDataSeries: false,
+      },
+  },
+               dataLabels: {
+                 enabled: false,
+               },
+               colors: ['#46C5AD'],
+               fill: {
+                 gradient: {
+                   enabled: true,
+                   opacityFrom: 0.91,
+                   opacityTo: 0.1,
+                 }
+               },
+               markers: {
+                 size: 0,
+            foreColor: 'black',
+               },
+               series: [{
+                 data: created_utc,
+               }],
+               xaxis: {
+                 type: 'datetime'
+               }
+             }
+             var chartline2 = new ApexCharts(
+               document.querySelector("#stockmarketdemo8"),
+               optionsline2
+             );
+
+             chartline2.render();
+            }
+            document.getElementById("stockmarketdemo8-upper2").innerHTML = '&nbsp;';
+            document.getElementById("stockmarketdemo8-upper2").innerHTML = '<div id="stockmarketdemo8bottom"  class="chart-fit" ></div>';
+
+
+            // stockmarketdemo8bottom
+            $( "#stockmarketdemo8bottom" ).empty();
+            var stockmarketdemo8bottom = jQuery('#stockmarketdemo8bottom');
+            if (stockmarketdemo8bottom.length > 0) {
+            var options = {
+                 chart: {
+                   id: 'stockmarketdemo8bottom',
+                   height: 130,
+                   type: 'area',
+            fontFamily: 'Poppins',
+            foreColor: 'white',
+                   brush:{
+                     target: 'stockmarketdemo8',
+                     enabled: true
+                   },
+                   selection: {
+                     enabled: true,
+                     xaxis: {
+                       min: new Date('01 Dec 2018').getTime(),
+                       max: new Date('19 Feb 2019').getTime()
+                     }
+                   },
+                 },
+                 colors: ['#46C5AD'],
+                 series: [{
+                   data: created_utc
+                 }],
+                 fill: {
+                   gradient: {
+                     enabled: true,
+                     opacityFrom: 0.91,
+                     opacityTo: 0.1,
+                   }
+                 },
+                 xaxis: {
+                   type: 'datetime',
+                   offsetX: 10,
+                   tooltip: {
+                     enabled: false
+                   }
+                 },
+                 yaxis: {
+                   tickAmount: 2,
+            labels: {
+            show: true,
+            },
+                 }
+               }
+               var chart = new ApexCharts(
+                 document.querySelector("#stockmarketdemo8bottom"),
+                 options
+               );
+               chart.render();
+            }
+
+
+var reddit_sentiment = [];
+var reddit_count = [];
+var news_count = [];
+var news_sentiment = [];
+var fin_count = [];
+var fin_sentiment = [];
+var tweet_count = [];
+var tweet_sentiment = [];
+$.each(data.reddit_count, function (index, value) {
+  reddit_sentiment.push(value.reddit_sentiment);
+  reddit_count.push(value.count);
+
+});
+$( "#apexdemo8" ).empty();
+            var apexdemo8 = jQuery('#apexdemo8')
+            if (apexdemo8.length > 0) {
+              var optionDonut = {
+                chart: {
+
+                    type: 'pie',
+                    height: '220',
+          width: '100%',
+          foreColor: '##ffffff'
+                },
+                dataLabels: {
+                  enabled: false,
+                },
+          legend: {
+          position: 'bottom',
+horizontalAlign: 'center',
+          },
+                plotOptions: {
+                  pie: {
+                    donut: {
+                      size: '100%',
+                    },
+                    offsetY: 0,
+                  },
+                  stroke: {
+                    colors: undefined
+                  }
+                },
+                colors: ['#e74c3c','#f1c40f','#2ecc71'],
+
+                series: reddit_count,
+                labels: reddit_sentiment,
+              }
+
+              var donut = new ApexCharts(
+                document.querySelector("#apexdemo8"),
+                optionDonut
+              )
+              donut.render();
+
+            }
+
+            $.each(data.tweet_count, function (index, value) {
+              tweet_sentiment.push(value.tweet_sentiment);
+              tweet_count.push(value.count);
+
+            });
+$( "#apexdemo11" ).empty();
+            var apexdemo11 = jQuery('#apexdemo11')
+            if (apexdemo11.length > 0) {
+              var optionDonut = {
+                chart: {
+
+                    type: 'pie',
+                    height: '220',
+          width: '100%',
+          foreColor: '##ffffff'
+                },
+                dataLabels: {
+                  enabled: false,
+                },
+          legend: {
+          position: 'bottom',
+horizontalAlign: 'center',
+          },
+                plotOptions: {
+                  pie: {
+                    donut: {
+                      size: '100%',
+                    },
+                    offsetY: 0,
+                  },
+                  stroke: {
+                    colors: undefined
+                  }
+                },
+                colors: ['#e74c3c','#f1c40f','#2ecc71'],
+
+                series: tweet_count,
+                labels: tweet_sentiment,
+              }
+
+              var donut = new ApexCharts(
+                document.querySelector("#apexdemo11"),
+                optionDonut
+              )
+              donut.render();
+
+            }
+            $.each(data.news_count, function (index, value) {
+              news_sentiment.push(value.news_sentiment);
+              news_count.push(value.count);
+
+            });
+$( "#apexdemo9" ).empty();
+            var apexdemo9 = jQuery('#apexdemo9')
+            if (apexdemo9.length > 0) {
+              var optionDonut = {
+                chart: {
+
+                    type: 'pie',
+                    height: '220',
+          width: '100%',
+          foreColor: '##ffffff'
+                },
+                dataLabels: {
+                  enabled: false,
+                },
+          legend: {
+          position: 'bottom',
+horizontalAlign: 'center',
+          },
+                plotOptions: {
+                  pie: {
+                    donut: {
+                      size: '100%',
+                    },
+                    offsetY: 0,
+                  },
+                  stroke: {
+                    colors: undefined
+                  }
+                },
+                colors: ['#e74c3c','#f1c40f','#2ecc71'],
+
+                series: news_count,
+                labels: news_sentiment,
+              }
+
+              var donut = new ApexCharts(
+                document.querySelector("#apexdemo9"),
+                optionDonut
+              )
+              donut.render();
+
+            }
+
+            $.each(data.fin_count, function (index, value) {
+              fin_sentiment.push(value.fin_sentiment);
+              fin_count.push(value.count);
+
+            });
+$( "#apexdemo10" ).empty();
+            var apexdemo10 = jQuery('#apexdemo10')
+            if (apexdemo10.length > 0) {
+              var optionDonut = {
+                chart: {
+
+                    type: 'pie',
+                    height: '220',
+          width: '100%',
+          foreColor: '##ffffff'
+                },
+                dataLabels: {
+                  enabled: false,
+                },
+          legend: {
+          position: 'bottom',
+horizontalAlign: 'center',
+          },
+                plotOptions: {
+                  pie: {
+                    donut: {
+                      size: '100%',
+                    },
+                    offsetY: 0,
+                  },
+                  stroke: {
+                    colors: undefined
+                  }
+                },
+                colors: ['#e74c3c','#f1c40f','#2ecc71'],
+
+                series: fin_count,
+                labels: fin_sentiment,
+              }
+
+              var donut = new ApexCharts(
+                document.querySelector("#apexdemo10"),
+                optionDonut
+              )
+              donut.render();
+
+            }
+
+
+
+
+
+
+
+          });
+          return false;
+        });
+      });
+
+
+
+
+
+      $(function() {
+        $( document ).ready(function() {
+          $.getJSON($SCRIPT_ROOT + '/_complete_graph', {
+            a: 'Bitcoin',
+            type:'cryptocurrencies',
+          }, function(data) {
+            var created_utc = [];
+            var open = [];
+              $.each(data.result, function (index, value) {
+                created_utc.push([String(value.created_utc),value.open]);
+
+              });
+
+              (function(window, document, $, undefined) {
+                $(function() {
+                  var chartJS = jQuery(".chartjs-wrapper");
+                  if (chartJS.length > 0) {
+                    /* Utils */
+                    window.chartColors = {
+                      red: 'rgb(233, 84, 84)',
+                      orange: 'rgb(253, 153, 68)',
+                      yellow: 'rgb(255, 188, 29)',
+                      green: 'rgb(37, 208, 154)',
+                      blue: 'rgb(71, 118, 230)',
+                      purple: 'rgb(142, 84, 233)',
+                      grey: 'rgb(148, 148, 148)'
+                    };
+
+                    (function(global) {
+                      var Months = [
+                        'January',
+                        'February',
+                        'March',
+                        'April',
+                        'May',
+                        'June',
+                        'July',
+                        'August',
+                        'September',
+                        'October',
+                        'November',
+                        'December'
+                      ];
+
+                      var COLORS = [
+                        '#4dc9f6',
+                        '#f67019',
+                        '#f53794',
+                        '#537bc4',
+                        '#acc236',
+                        '#166a8f',
+                        '#00a950',
+                        '#58595b',
+                        '#8549ba'
+                      ];
+
+                      var Samples = global.Samples || (global.Samples = {});
+                      var Color = global.Color;
+                      Samples.utils = {
+                        // Adapted from http://indiegamr.com/generate-repeatable-random-numbers-in-js/
+                        srand: function(seed) {
+                          this._seed = seed;
+                        },
+
+                        rand: function(min, max) {
+                          var seed = this._seed;
+                          min = min === undefined ? 0 : min;
+                          max = max === undefined ? 1 : max;
+                          this._seed = (seed * 9301 + 49297) % 233280;
+                          return min + (this._seed / 233280) * (max - min);
+                        },
+
+                        numbers: function(config) {
+                          var cfg = config || {};
+                          var min = cfg.min || 0;
+                          var max = cfg.max || 1;
+                          var from = cfg.from || [];
+                          var count = cfg.count || 8;
+                          var decimals = cfg.decimals || 8;
+                          var continuity = cfg.continuity || 1;
+                          var dfactor = Math.pow(10, decimals) || 0;
+                          var data = [];
+                          var i, value;
+
+                          for (i = 0; i < count; ++i) {
+                            value = (from[i] || 0) + this.rand(min, max);
+                            if (this.rand() <= continuity) {
+                              data.push(Math.round(dfactor * value) / dfactor);
+                            } else {
+                              data.push(null);
+                            }
+                          }
+
+                          return data;
+                        },
+
+                        labels: function(config) {
+                          var cfg = config || {};
+                          var min = cfg.min || 0;
+                          var max = cfg.max || 100;
+                          var count = cfg.count || 8;
+                          var step = (max - min) / count;
+                          var decimals = cfg.decimals || 8;
+                          var dfactor = Math.pow(10, decimals) || 0;
+                          var prefix = cfg.prefix || '';
+                          var values = [];
+                          var i;
+
+                          for (i = min; i < max; i += step) {
+                            values.push(prefix + Math.round(dfactor * i) / dfactor);
+                          }
+
+                          return values;
+                        },
+
+                        months: function(config) {
+                          var cfg = config || {};
+                          var count = cfg.count || 12;
+                          var section = cfg.section;
+                          var values = [];
+                          var i, value;
+
+                          for (i = 0; i < count; ++i) {
+                            value = Months[Math.ceil(i) % 12];
+                            values.push(value.substring(0, section));
+                          }
+
+                          return values;
+                        },
+
+                        color: function(index) {
+                          return COLORS[index % COLORS.length];
+                        },
+
+                        transparentize: function(color, opacity) {
+                          var alpha = opacity === undefined ? 0.5 : 1 - opacity;
+                          return Color(color).alpha(alpha).rgbString();
+                        }
+                      };
+
+                      // DEPRECATED
+                      window.randomScalingFactor = function() {
+                        return Math.round(Samples.utils.rand(-100, 100));
+                      };
+
+                      // INITIALIZATION
+
+                      Samples.utils.srand(Date.now());
+
+                    }(this));
+                    /*Custom Points*/
+
+
+
+
+                    var color = Chart.helpers.color;
+
+                    var chartjsdemo4 = jQuery("#chartjsdemo4");
+                    var json_raw = {{plot1 | tojson}}
+                    var jsonfile = $.grep(json_raw, function(n, i) {
+                      return n.asset_name === 'Bitcoin';
+                    });
+                    var created_utc = $.map(jsonfile, function(n) {
+                      return n['created_utc']; // Here 'this' points to an 'item' in 'items'
+                    })
+                    var max = 0;
+                    var open = $.map(jsonfile, function(n) {
+                      if (n['open'] > max) {
+                        max = n['open'];
+                      }
+                      return String(n['open']); // Here 'this' points to an 'item' in 'items'
+                    })
+                    var sell_predicted = $.map(jsonfile, function(n) {
+                      return String(n['sell_predicted'] * (max + 10)); // Here 'this' points to an 'item' in 'items'
+                    })
+                    var buy_predicted = $.map(jsonfile, function(n) {
+                      return String(n['buy_predicted'] * (max + 10)); // Here 'this' points to an 'item' in 'items'
+                    })
+                    var news_combined_tile = $.map(jsonfile, function(n) {
+                      return String(n['news_combined_tile']); // Here 'this' points to an 'item' in 'items'
+                    })
+
+                    if (chartjsdemo4.length > 0) {
+                      // Combo
+                      var timeFormat = 'YYYY-MM-DD HH:mm:ss';
+
+                      function newDateString(days) {
+                        return moment().add(days, 'd').format(timeFormat);
+                      }
+                      var color = Chart.helpers.color;
+                      var ctx4 = document.getElementById("chartjsdemo4").getContext("2d");
+
+
+                      var config4 = {
+                        type: 'bar',
+                        data: {
+                          labels: created_utc,
+                          datasets: [{
+                            type: 'bar',
+                            label: 'Sell Signal',
+                            fill:true,
+                            fillColor:'#c62828',
+                            borderColor: '#c62828',
+                            backgroundColor: '#c62828',
+                            data: sell_predicted,
+                            borderWidth: 10,
+                          }, {
+                            type: 'bar',
+                            fill:true,
+                            label: 'Buy Signal',
+                            fillColor:  '#8bc34a',
+                            borderColor: '#8bc34a',
+                              backgroundColor: '#8bc34a',
+                            data: buy_predicted,
+                            borderWidth: 10,
+                          }, {
+                            type: 'line',
+                            label: 'Open Price',
+                            borderColor: '#46C5AD',
+                            fillColor:  '#46C5AD',
+                            backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                            fill:true,
+                            data: open,
+                          }, {
+                            label: 'News',
+                            data: news_combined_tile,
+                          }, ]
+                        },
+                        options: {
+                          maintainAspectRatio: false,
+                          responsive: true,
+
+                          title: {
+                            display: false,
+                            text: "Combo Time Scale"
+                          },
+
+                          tooltips: {
+
+
+                            tooltipEvents: ["click"],
+                            callbacks: {
+                              titleFontStyle: 'bold',
+                              titleFontSize: 24,
+                              title: function(open, data) {
+                                return data['labels'][open['index']];
+                              },
+                              label: function(tooltipItem, data) {
+                                return 'Opening Price : ' + data['datasets'][2]['data'][tooltipItem['index']] + '\n';
+                              },
+                              afterLabel: function(tooltipItem, data) {
+                                var dataset = data['datasets'][3];
+                                var buyorsell = data['datasets'][1]['data'][tooltipItem['index']];
+                                var prediction = '';
+                                if (buyorsell == 0) {
+                                  prediction = 'Sell Asset';
+                                } else {
+                                  prediction = 'Buy Asset';
+                                }
+                                var percent = dataset['data'][tooltipItem['index']];
+                                tooltip = 'Signal Prediction: ' + prediction + '\n' + 'Most Impacted News Article: ' + percent + '';
+                                return tooltip;
+                              },
+
+                            },
+
+                          },
+                          legend: {
+                            labels: {
+                              fontColor: 'white',
+                              fontFamily: 'Poppins',
+                              fontSize: 12
+
+                            }
+                          },
+                          scales: {
+                            xAxes: [{
+                              barPercentage: 0.5,
+                              type: "time",
+                              display: true,
+                              time: {
+                                format: timeFormat
+                              },
+                              ticks: {
+                                fontColor: 'white',
+                                fontFamily: 'Poppins',
+                                fontSize: 12
+                              }
+                            }],
+                            yAxes: [{
+                              ticks: {
+                                fontColor: 'white',
+                                fontFamily: 'Poppins',
+                                fontSize: 12,
+                                min:Math.min.apply(Math,open),
+                                max:Math.max.apply(Math,open),
+                              }
+                            }]
+                          },
+                        }
+                      };
+
+                      window.myLine4 = new Chart(ctx4, config4);
+                    }
+
+
+
+
+
+
+                  }
+                });
+
+              })(window, document, window.jQuery);
+
+
+
+
+
+
+
+            var stockmarketdemo8 = jQuery('#stockmarketdemo8')
+            if (stockmarketdemo8.length > 0) {
+             var optionsline2 = {
+               chart: {
+                 id: 'stockmarketdemo8',
+                 type: 'line',
+                 height: 240,
+            fontFamily: 'Poppins',
+            foreColor: 'white',
+                 toolbar: {
+                   autoSelected: 'pan',
+                   show: false
+                 }
+               },
+               colors: ['#46C5AD'],
+               stroke: {
+                 width: 4,
+                 curve: 'smooth'
+               },
+               tooltip: {
+      enabled: true,
+      shared: true,
+      followCursor: false,
+      intersect: false,
+      inverseOrder: false,
+      custom: undefined,
+      fillSeriesColor: false,
+      theme: 'dark',
+      style: {
+        fontSize: '12px',
+        fontFamily: undefined
+      },
+      onDatasetHover: {
+          highlightDataSeries: false,
+      },
+  },
+               dataLabels: {
+                 enabled: false,
+               },
+               fill: {
+                 opacity: 1,
+               },
+               markers: {
+                 size: 0,
+            foreColor: 'black',
+               },
+               series: [{
+                 data: created_utc,
+               }],
+               xaxis: {
+                 type: 'datetime'
+               }
+             }
+
+             var chartline2 = new ApexCharts(
+               document.querySelector("#stockmarketdemo8"),
+               optionsline2
+             );
+
+             chartline2.render();
+            }
+
+
+            // stockmarketdemo8bottom
+            var stockmarketdemo8bottom = jQuery('#stockmarketdemo8bottom');
+            if (stockmarketdemo8bottom.length > 0) {
+            var options = {
+                 chart: {
+                   id: 'stockmarketdemo8bottom',
+                   height: 130,
+                   type: 'area',
+            fontFamily: 'Poppins',
+            foreColor: 'white',
+                   brush:{
+                     target: 'stockmarketdemo8',
+                     enabled: true
+                   },
+                   selection: {
+                     enabled: true,
+                     xaxis: {
+                       min: new Date('01 Dec 2018').getTime(),
+                       max: new Date('19 Feb 2019').getTime()
+                     }
+                   },
+                 },
+                 colors: ['#46C5AD'],
+                 series: [{
+                   data: created_utc
+                 }],
+                 fill: {
+                   gradient: {
+                     enabled: true,
+                     opacityFrom: 0.91,
+                     opacityTo: 0.1,
+                   }
+                 },
+                 xaxis: {
+                   type: 'datetime',
+                   offsetX: 10,
+                   tooltip: {
+                     enabled: false
+                   }
+                 },
+                 yaxis: {
+                   tickAmount: 2,
+            labels: {
+            show: true,
+            },
+                 }
+               }
+
+               var chart = new ApexCharts(
+                 document.querySelector("#stockmarketdemo8bottom"),
+                 options
+               );
+
+               chart.render();
+            }
+
+            var created_utc = [];
+            var open = [];
+            var news_combined_score = [];
+              $.each(data.senti_result, function (index, value) {
+                created_utc.push(String(value.created_utc));
+                open.push(value.open);
+                news_combined_score.push(value.news_combined_score);
+
+              });
+
+            var sparklinedemo4 = jQuery("#sparklinedemo4");
+            if (sparklinedemo4.length > 0) {
+                $(sparklinedemo4).sparkline(open, {
+                    type: 'line',
+                    width: '100%',
+                    height: '300',
+                    lineColor: 'rgba(0, 0, 0, 1)',
+                    lineWidth: '3',
+                    fillColor: 'rgba(0, 0, 0, 0.4)',
+                    highlightLineColor: 'rgba(0,0,0,.1)',
+                    highlightSpotColor: 'rgba(0,0,0,.2)'
+                });
+                $(sparklinedemo4).sparkline(news_combined_score, {
+                    type: 'bar',
+                    height: '200',
+                    barWidth: '10',
+                    barSpacing: '5',
+                    composite: true,
+                    barColor: '#2ecc71',
+                });
+
+            }
+
+            var created_utc = [];
+            var open = [];
+            var news_combined_score = [];
+              $.each(data.senti_result, function (index, value) {
+                created_utc.push(String(value.created_utc));
+                open.push(value.open);
+                news_combined_score.push(value.news_combined_score);
+
+              });
+var reddit_sentiment = [];
+var reddit_count = [];
+var news_count = [];
+var news_sentiment = [];
+var fin_count = [];
+var fin_sentiment = [];
+var tweet_count = [];
+var tweet_sentiment = [];
+$.each(data.reddit_count, function (index, value) {
+  reddit_sentiment.push(value.reddit_sentiment);
+  reddit_count.push(value.count);
+
+});
+            var apexdemo8 = jQuery('#apexdemo8')
+            if (apexdemo8.length > 0) {
+              var optionDonut = {
+                chart: {
+
+                    type: 'pie',
+                    height: '220',
+          width: '100%',
+          foreColor: '##ffffff'
+                },
+                dataLabels: {
+                  enabled: false,
+                },
+          legend: {
+          position: 'bottom',
+horizontalAlign: 'center',
+          },
+                plotOptions: {
+                  pie: {
+                    donut: {
+                      size: '100%',
+                    },
+                    offsetY: 0,
+                  },
+                  stroke: {
+                    colors: undefined
+                  }
+                },
+                colors: ['#e74c3c','#f1c40f','#2ecc71'],
+
+                series: reddit_count,
+                labels: reddit_sentiment,
+              }
+
+              var donut = new ApexCharts(
+                document.querySelector("#apexdemo8"),
+                optionDonut
+              )
+              donut.render();
+
+            }
+
+            $.each(data.tweet_count, function (index, value) {
+              tweet_sentiment.push(value.tweet_sentiment);
+              tweet_count.push(value.count);
+
+            });
+
+            var apexdemo11 = jQuery('#apexdemo11')
+            if (apexdemo11.length > 0) {
+              var optionDonut = {
+                chart: {
+
+                    type: 'pie',
+                    height: '220',
+          width: '100%',
+          foreColor: '##ffffff'
+                },
+                dataLabels: {
+                  enabled: false,
+                },
+          legend: {
+          position: 'bottom',
+horizontalAlign: 'center',
+          },
+                plotOptions: {
+                  pie: {
+                    donut: {
+                      size: '100%',
+                    },
+                    offsetY: 0,
+                  },
+                  stroke: {
+                    colors: undefined
+                  }
+                },
+                colors: ['#e74c3c','#f1c40f','#2ecc71'],
+
+                series: tweet_count,
+                labels: tweet_sentiment,
+              }
+
+              var donut = new ApexCharts(
+                document.querySelector("#apexdemo11"),
+                optionDonut
+              )
+              donut.render();
+
+            }
+            $.each(data.news_count, function (index, value) {
+              news_sentiment.push(value.news_sentiment);
+              news_count.push(value.count);
+
+            });
+            var apexdemo9 = jQuery('#apexdemo9')
+            if (apexdemo9.length > 0) {
+              var optionDonut = {
+                chart: {
+
+                    type: 'pie',
+                    height: '220',
+          width: '100%',
+          foreColor: '##ffffff'
+                },
+                dataLabels: {
+                  enabled: false,
+                },
+          legend: {
+          position: 'bottom',
+horizontalAlign: 'center',
+          },
+                plotOptions: {
+                  pie: {
+                    donut: {
+                      size: '100%',
+                    },
+                    offsetY: 0,
+                  },
+                  stroke: {
+                    colors: undefined
+                  }
+                },
+                colors: ['#e74c3c','#f1c40f','#2ecc71'],
+
+                series: news_count,
+                labels: news_sentiment,
+              }
+
+              var donut = new ApexCharts(
+                document.querySelector("#apexdemo9"),
+                optionDonut
+              )
+              donut.render();
+
+            }
+
+            $.each(data.fin_count, function (index, value) {
+              fin_sentiment.push(value.fin_sentiment);
+              fin_count.push(value.count);
+
+            });
+
+
+
+            var apexdemo10 = jQuery('#apexdemo10')
+            if (apexdemo10.length > 0) {
+              var optionDonut = {
+                chart: {
+
+                    type: 'pie',
+                    height: '220',
+          width: '100%',
+          foreColor: '##ffffff'
+                },
+                dataLabels: {
+                  enabled: false,
+                },
+          legend: {
+          position: 'bottom',
+horizontalAlign: 'center',
+          },
+                plotOptions: {
+                  pie: {
+                    donut: {
+                      size: '100%',
+                    },
+                    offsetY: 0,
+                  },
+                  stroke: {
+                    colors: undefined
+                  }
+                },
+                colors: ['#e74c3c','#f1c40f','#2ecc71'],
+
+                series: fin_count,
+                labels: fin_sentiment,
+              }
+
+              var donut = new ApexCharts(
+                document.querySelector("#apexdemo10"),
+                optionDonut
+              )
+              donut.render();
+
+            }
+
+
+
+
+
+
+          });
+
+          return false;
+        });
+      });
+
+
+    </script>
+  </div>
+
+</body>
+
+
+
+
+</html>
